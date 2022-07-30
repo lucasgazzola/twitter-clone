@@ -4,6 +4,10 @@
 /node_modules
 /.pnp
 .pnp.js
+/sanity/node_modules
+
+# env variables
+.env.local
 
 # testing
 /coverage

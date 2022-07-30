@@ -24,13 +24,17 @@ function AccountButton() {
         onClick={handleAvatarClick}
         className="self-end flex items-center justify-center w-fit h-fit"
       >
-        <Image
-          className="rounded-full"
-          alt="avatar"
-          width={60}
-          height={60}
-          src={avatarUrl}
-        />
+        {avatarUrl ? (
+          <Image
+            className="rounded-full"
+            alt="avatar"
+            width={60}
+            height={60}
+            src={avatarUrl}
+          />
+        ) : (
+          <div className="rounded-full w-[60px] h-[60px] bg-gray-800"></div>
+        )}
       </button>
       {showMenu && <UserAccountMenu />}
     </div>

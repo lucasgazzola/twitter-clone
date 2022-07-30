@@ -15,7 +15,7 @@ function Login() {
           provider: 'github'
         },
         {
-          redirectTo: '/'
+          redirectTo: process.env.NEXTAUTH_URL
         }
       );
     } catch (error) {

@@ -16,7 +16,7 @@ function AccountButton() {
   useEffect(() => {
     const { avatarUrl } = user;
     setAvatarUrl(avatarUrl);
-  }, []);
+  }, [user]);
 
   return (
     <div className="relative">

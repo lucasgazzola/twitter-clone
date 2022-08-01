@@ -4,18 +4,19 @@ import { useUserContext } from '../context/UserContext';
 import UserAccountMenu from './UserAccountMenu';
 
 function AccountButton() {
-  const [avatarUrl, setAvatarUrl] = useState('');
   const [showMenu, setShowMenu] = useState(false);
+  const [avatarUrl, setAvatarUrl] = useState('');
 
   const handleAvatarClick = () => {
     setShowMenu((prev) => !prev);
   };
 
-  const { userData } = useUserContext();
+  const { user } = useUserContext();
 
   useEffect(() => {
-    userData && setAvatarUrl(userData.avatar_url);
-  }, [userData]);
+    const { avatarUrl } = user;
+    setAvatarUrl(avatarUrl);
+  }, []);
 
   return (
     <div className="relative">
@@ -24,13 +25,17 @@ function AccountButton() {
         onClick={handleAvatarClick}
         className="self-end flex items-center justify-center w-fit h-fit"
       >
-        <Image
-          className="rounded-full"
-          alt="avatar"
-          width={60}
-          height={60}
-          src={avatarUrl}
-        />
+        {avatarUrl ? (
+          <Image
+            height={60}
+            width={60}
+            alt="avatar"
+            src={avatarUrl}
+            className="rounded-full"
+          />
+        ) : (
+          <div className="w-[60px] h-[60px] bg-gray-800 rounded-full"></div>
+        )}
       </button>
       {showMenu && <UserAccountMenu />}
     </div>

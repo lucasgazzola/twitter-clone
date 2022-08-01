@@ -12,17 +12,17 @@ function Tweet({ content, created_at, id: tweetId, likes, retweets, user }) {
     });
   };
 
-  const { avatar_url, username, id: userId } = user;
+  const { avatarUrl, username, id: userId } = user;
 
   return (
     <div className="border-gray-800 border-[1px] flex w-full p-6 gap-4">
       <div className="avatar-container w-[60px] h-[60px]">
-        {avatar_url ? (
+        {avatarUrl ? (
           <Image
             height={60}
             width={60}
             alt="avatar"
-            src={avatar_url}
+            src={avatarUrl}
             className="rounded-full"
           />
         ) : (

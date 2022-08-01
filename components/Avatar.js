@@ -5,15 +5,15 @@ import { useUserContext } from '../context/UserContext';
 function Avatar() {
   const [avatarUrl, setAvatarUrl] = useState('');
 
-  const { userData } = useUserContext();
+  const { user } = useUserContext();
 
   const handleAvatarClick = () => {
     alert('Avatar clicked');
   };
 
   useEffect(() => {
-    userData && setAvatarUrl(userData.avatar_url);
-  }, [userData]);
+    user?.avatarUrl && setAvatarUrl(user.avatarUrl);
+  }, [user?.avatarUrl]);
 
   return (
     <div

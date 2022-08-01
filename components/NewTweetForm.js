@@ -1,12 +1,16 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { supabase } from '../utils/supabaseClient';
 import { useUserContext } from '../context/UserContext';
 
 function NewTweetForm() {
   const [newTweetContent, setNewTweetContent] = useState('');
-  const { userData } = useUserContext();
+  const [id, setId] = useState('');
+  const { user } = useUserContext();
 
-  const { id } = userData;
+  useEffect(() => {
+    const { id } = user;
+    setId(id);
+  }, [user]);
 
   const sendNewTweet = async (user, content) => {
     try {

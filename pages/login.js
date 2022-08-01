@@ -1,13 +1,7 @@
 import { supabase } from '../utils/supabaseClient';
-import { useRouter } from 'next/router';
 import { AiFillGithub } from 'react-icons/ai';
-import { useEffect } from 'react';
 
 function Login() {
-  const router = useRouter();
-
-  const user = supabase.auth.user();
-
   const handleGithubLogin = async () => {
     try {
       await supabase.auth.signIn(
@@ -22,12 +16,6 @@ function Login() {
       console.error(error);
     }
   };
-
-  useEffect(() => {
-    if (user) {
-      router.isReady && router.push('/', '/', { shallow: true });
-    }
-  }, []);
 
   return (
     <main className="flex h-full items-center justify-center">

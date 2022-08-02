@@ -12,7 +12,8 @@ export async function createProfile(response) {
   //         "user_name": "lucasgazzola"
   //     },
   // }
-  const { id, email: username, user_metadata } = response;
+  const { id, user_metadata, email } = response;
+  const { user_name: username } = user_metadata;
   try {
     // it returns an empty array if doesn't find the profile
     // then create it
@@ -22,10 +23,13 @@ export async function createProfile(response) {
       const { error } = await supabase.from('profiles').insert({
         id,
         username,
+        email,
         updated_at: new Date(),
         avatar_url
       });
-      throw new Error(error.message);
+      if (error) {
+        throw new Error(error.message);
+      }
     }
   } catch (error) {
     console.error(error);

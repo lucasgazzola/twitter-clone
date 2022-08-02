@@ -1,21 +1,20 @@
 import { useEffect, useState } from 'react';
-import { getAllTweets } from '../services/tweetsService';
+import { useTweetsContext } from '../context/TweetsContext';
 import Tweet from './Tweet';
 
 function Feed() {
-  const [tweets, setTweets] = useState([]);
+  const { tweets } = useTweetsContext();
+  const [tweetList, setTweetList] = useState([]);
 
   useEffect(() => {
-    async function fetchTweets() {
-      const fetchedTweets = await getAllTweets();
-      setTweets(fetchedTweets.reverse());
-    }
-    fetchTweets();
-  }, []);
+    setTweetList(tweets);
+  }, [tweets]);
 
   return (
     <div className="flex flex-col text-inherit w-full h-full">
-      {tweets && tweets.map((tweet) => <Tweet key={tweet.id} {...tweet} />)}
+      {tweetList.map((tweet) => (
+        <Tweet key={tweet.id} {...tweet} />
+      ))}
     </div>
   );
 }

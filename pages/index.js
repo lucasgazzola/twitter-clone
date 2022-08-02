@@ -6,6 +6,7 @@ import { useUserContext } from '../context/UserContext';
 import Head from 'next/head';
 import NavBar from '../components/NavBar';
 import MainContent from '../components/MainContent';
+import { TweetsContextProvider } from '../context/TweetsContext';
 
 export default function Home() {
   return (
@@ -15,7 +16,9 @@ export default function Home() {
         <meta name="description" content="Twitter Clone" />
       </Head>
       <NavBar />
-      <MainContent />
+      <TweetsContextProvider>
+        <MainContent />
+      </TweetsContextProvider>
     </div>
   );
 }

@@ -1,34 +1,32 @@
 import { useEffect, useState } from 'react';
-import { supabase } from '../utils/supabaseClient';
+import { useTweetsContext } from '../context/TweetsContext';
 import { useUserContext } from '../context/UserContext';
+import { createNewTweet } from '../services/tweetsService';
 
 function NewTweetForm() {
   const [newTweetContent, setNewTweetContent] = useState('');
   const [id, setId] = useState('');
   const { user } = useUserContext();
+  const { setTweets } = useTweetsContext();
 
   useEffect(() => {
     const { id } = user;
     setId(id);
   }, [user]);
 
-  const sendNewTweet = async (user, content) => {
-    try {
-      const { data, error } = await supabase
-        .from('tweets')
-        .insert({ user, content });
-      if (error) {
-        throw new Error("We couldn't send the tweet");
-      }
-      console.log(data);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    sendNewTweet(id, newTweetContent);
+    const createdTweet = await createNewTweet(id, newTweetContent);
+    // createdTweet es
+    //   {
+    //     "id": 21,
+    //     "content": "asd",
+    //     "created_at": "2022-08-02T03:16:11.258352+00:00",
+    //     "likes": 0,
+    //     "user": "29af4cb4-b34b-4704-ade8-51a06a59d95f",
+    //     "retweets": 0
+    // }
+    setTweets((prev) => [createdTweet, ...prev]);
     setNewTweetContent('');
   };
   return (

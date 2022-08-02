@@ -1,8 +1,23 @@
 import React, { useState } from 'react';
-import { AiFillHeart, AiOutlineHeart, AiOutlineRetweet } from 'react-icons/ai';
+import {
+  AiFillHeart,
+  AiOutlineHeart,
+  AiOutlineRetweet,
+  AiOutlineComment
+} from 'react-icons/ai';
 import Image from 'next/image';
+import formatDate from '../utils/formatDate';
 
-function Tweet({ content, created_at, id: tweetId, likes, retweets, user }) {
+function Tweet({
+  id: tweetId,
+  content,
+  retweets,
+  likes,
+  created_at: createdAt,
+  user
+}) {
+  const { avatar_url: avatarUrl, username, email, id: userId } = user;
+
   const [isLiked, setIsLiked] = useState(false);
   const [likesQty, setLikesQty] = useState(likes);
   const handleClickLikeButton = () => {
@@ -11,8 +26,12 @@ function Tweet({ content, created_at, id: tweetId, likes, retweets, user }) {
       return !isLiked ? ++prevQty : --prevQty;
     });
   };
+  const [commentsQty, setCommentsQty] = useState(0);
+  const handleClickCommentButton = () => {
+    setCommentsQty((prevQty) => ++prevQty);
+  };
 
-  const { avatarUrl, username, id: userId } = user;
+  const createdat = formatDate(createdAt);
 
   return (
     <div className="border-gray-800 border-[1px] flex w-full p-6 gap-4">
@@ -31,11 +50,21 @@ function Tweet({ content, created_at, id: tweetId, likes, retweets, user }) {
       </div>
       <div className="flex flex-col gap-3 w-full">
         {/* TODO: handle profile click */}
-        <h3 className="font-bold">{username}</h3>
-        {/* TODO: created at */}
+        <header className="flex gap-2">
+          <h3 className="font-bold">{username}</h3>
+          <span className="font-light">{createdat}</span>
+        </header>
         <p className="w-full">{content}</p>
         {/* TODO: comments - share */}
         <div className="controls-container flex gap-2">
+          <button
+            type="button"
+            onClick={handleClickCommentButton}
+            className="flex w-fit h-fit items-center justify-center gap-1"
+          >
+            <AiOutlineComment />
+            <span>{commentsQty}</span>
+          </button>
           <button
             type="button"
             onClick={handleClickLikeButton}

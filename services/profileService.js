@@ -35,3 +35,18 @@ export async function createProfile(response) {
     console.error(error);
   }
 }
+
+export const handleGithubLogin = async () => {
+  try {
+    await supabase.auth.signIn(
+      {
+        provider: 'github'
+      },
+      {
+        redirectTo: process.env.NEXTAUTH_URL
+      }
+    );
+  } catch (error) {
+    console.error(error);
+  }
+};

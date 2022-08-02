@@ -38,6 +38,7 @@ function Tweet({
       <div className="avatar-container w-[60px] h-[60px]">
         {avatarUrl ? (
           <Image
+            priority={true}
             height={60}
             width={60}
             alt="avatar"

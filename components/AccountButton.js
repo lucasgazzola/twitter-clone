@@ -27,6 +27,7 @@ function AccountButton() {
       >
         {avatarUrl ? (
           <Image
+            priority={true}
             height={60}
             width={60}
             alt="avatar"

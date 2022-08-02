@@ -1,8 +1,3 @@
-import { supabase } from '../utils/supabaseClient';
-import { useRouter } from 'next/router';
-import { useEffect } from 'react';
-import { useUserContext } from '../context/UserContext';
-
 import Head from 'next/head';
 import NavBar from '../components/NavBar';
 import MainContent from '../components/MainContent';

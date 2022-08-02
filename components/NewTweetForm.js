@@ -36,7 +36,7 @@ function NewTweetForm() {
       className="w-full flex flex-col gap-4 items-end"
     >
       <input
-        className="w-full px-4 pt-2 pb-8 border-b-[1px] border-gray-600 bg-inherit placeholder:text-gray-600 placeholder:font-semibold"
+        className="w-full px-4 pt-2 pb-8 border-b-[1px] border-gray-600 bg-inherit placeholder:text-gray-600 placeholder:font-semibold outline-none"
         value={newTweetContent}
         onChange={(e) => setNewTweetContent(e.target.value)}
         type="text"

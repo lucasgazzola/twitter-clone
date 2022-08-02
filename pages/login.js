@@ -1,22 +1,7 @@
-import { supabase } from '../utils/supabaseClient';
+import { handleGithubLogin } from '../services/profileService';
 import { AiFillGithub } from 'react-icons/ai';
 
 function Login() {
-  const handleGithubLogin = async () => {
-    try {
-      await supabase.auth.signIn(
-        {
-          provider: 'github'
-        },
-        {
-          redirectTo: process.env.NEXTAUTH_URL
-        }
-      );
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
   return (
     <main className="flex h-full items-center justify-center">
       <div className="flex rounded-xl flex-col gap-2 border-2 p-16 w-fit">

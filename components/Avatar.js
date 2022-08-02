@@ -22,6 +22,7 @@ function Avatar() {
     >
       {avatarUrl ? (
         <Image
+          priority={true}
           className="rounded-full"
           alt="avatar"
           width={60}

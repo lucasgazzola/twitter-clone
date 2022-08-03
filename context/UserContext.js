@@ -1,6 +1,7 @@
 import { useRouter } from 'next/router';
 import { createContext, useContext, useEffect, useState } from 'react';
 import { createProfile } from '../services/profileService';
+import { supabase } from '../utils/supabaseClient';
 
 const UserContext = createContext({});
 
@@ -8,8 +9,9 @@ export function useUserContext() {
   return useContext(UserContext);
 }
 
-export function UserContextProvider({ children, response }) {
+export function UserContextProvider({ children }) {
   const router = useRouter();
+
   const INITIAL_USER = {
     id: '',
     username: '',
@@ -20,38 +22,48 @@ export function UserContextProvider({ children, response }) {
   };
 
   const [user, setUser] = useState(INITIAL_USER);
+  const [session, setSession] = useState(supabase.auth.session());
 
   useEffect(() => {
-    if (response?.aud === 'authenticated') {
-      // TODO: FIX UNCAUGHT ERROR WHEN USER LOGS IN
+    setSession(supabase.auth.session());
 
-      const { user_metadata, email, aud, id } = response;
-      const { avatar_url, user_name, full_name } = user_metadata;
+    supabase.auth.onAuthStateChange((_event, session) => {
+      setSession(session);
+    });
 
-      // profile creation in the supabase db if it does not exist yet
-      createProfile(response);
+    if (session && session.user) {
+      const { user } = session;
+      if (user?.aud === 'authenticated') {
+        const { user_metadata, email, aud, id } = user;
+        const { avatar_url, user_name, full_name } = user_metadata;
 
-      // reformat the response
-      const loggedUser = {
-        id,
-        username: user_name,
-        email,
-        fullName: full_name,
-        aud,
-        avatarUrl: avatar_url
-      };
-      router.isReady &&
-        router
-          .push('/', '/', { shallow: true })
-          .then(() => {
-            setUser(loggedUser);
-          })
-          .catch((err) => {
-            console.log(err);
-          });
+        // profile creation in the supabase db if it does not exist yet
+        createProfile(user);
+
+        // reformat the response
+        const loggedUser = {
+          id,
+          username: user_name,
+          email,
+          fullName: full_name,
+          aud,
+          avatarUrl: avatar_url
+        };
+
+        // set the user
+        setUser(loggedUser);
+        // router.isReady &&
+        //   router
+        //     .push('/', '/', { shallow: true })
+        //     .then(() => {
+        //       setUser(loggedUser);
+        //     })
+        //     .catch((err) => {
+        //       console.log(err);
+        //     });
+      }
     }
-
-    !response &&
+    !session &&
       router.isReady &&
       router
         .push('/login', '/login', { shallow: true })
@@ -59,7 +71,7 @@ export function UserContextProvider({ children, response }) {
         .catch((err) => {
           console.log(err);
         });
-  }, [response]);
+  }, []);
 
   const userContextValue = { user };
 

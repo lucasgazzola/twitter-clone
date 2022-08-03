@@ -4,7 +4,8 @@ import { useRouter } from 'next/router';
 function UserAccountMenu() {
   const router = useRouter();
 
-  const handleSignOut = async () => {
+  const handleSignOut = async (e) => {
+    e.preventDefault();
     try {
       const { error } = await supabase.auth.signOut();
       if (error) throw new Error('Error signing out');

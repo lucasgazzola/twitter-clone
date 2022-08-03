@@ -36,7 +36,8 @@ export async function createProfile(response) {
   }
 }
 
-export const handleGithubLogin = async () => {
+export const handleGithubLogin = async (e) => {
+  e.preventDefault();
   try {
     await supabase.auth.signIn(
       {

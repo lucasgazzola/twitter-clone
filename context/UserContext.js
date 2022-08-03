@@ -1,7 +1,6 @@
 import { useRouter } from 'next/router';
 import { createContext, useContext, useEffect, useState } from 'react';
 import { createProfile } from '../services/profileService';
-import { supabase } from '../utils/supabaseClient';
 
 const UserContext = createContext({});
 
@@ -9,7 +8,7 @@ export function useUserContext() {
   return useContext(UserContext);
 }
 
-export function UserContextProvider({ children }) {
+export function UserContextProvider({ children, response }) {
   const router = useRouter();
   const INITIAL_USER = {
     id: '',
@@ -19,23 +18,11 @@ export function UserContextProvider({ children }) {
     aud: '',
     avatarUrl: ''
   };
+
   const [user, setUser] = useState(INITIAL_USER);
 
-  const response = supabase.auth.user();
-
   useEffect(() => {
-    // response is null or
-    //   {
-    //     "id": "4c7f506e-6653-46c4-add3-cc67c4d63ff7",
-    //     "aud": "authenticated",
-    //     "email": "lucasgazzola1@outlook.com",
-    //     "user_metadata": {
-    //         "avatar_url": "https://avatars.githubusercontent.com/u/85223876?v=4",
-    //         "full_name": "Lucas Gazzola",
-    //         "user_name": "lucasgazzola"
-    //     },
-    // }
-    if (response && response.aud === 'authenticated') {
+    if (response?.aud === 'authenticated') {
       // TODO: FIX UNCAUGHT ERROR WHEN USER LOGS IN
 
       const { user_metadata, email, aud, id } = response;
@@ -62,16 +49,16 @@ export function UserContextProvider({ children }) {
           .catch((err) => {
             console.log(err);
           });
-    } else {
-      router.isReady &&
-        router
-          .push('/login', '/login', { shallow: true })
-          .then(() => setUser(INITIAL_USER))
-          .catch((err) => {
-            console.log(err);
-          });
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+
+    !response &&
+      router.isReady &&
+      router
+        .push('/login', '/login', { shallow: true })
+        .then(() => setUser(INITIAL_USER))
+        .catch((err) => {
+          console.log(err);
+        });
   }, [response]);
 
   const userContextValue = { user };

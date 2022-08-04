@@ -18,7 +18,7 @@ function Login() {
           provider: 'github'
         },
         {
-          redirectTo: 'http://localhost:3000/'
+          redirectTo: process.env.NEXT_PUBLIC_NEXTAUTH_URL
         }
       );
     } catch (error) {

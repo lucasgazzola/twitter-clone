@@ -14,7 +14,7 @@ function AccountButton() {
   const { user } = useUserContext();
 
   useEffect(() => {
-    const { avatarUrl } = user;
+    const { avatarUrl } = user || '';
     setAvatarUrl(avatarUrl);
   }, [user]);
 

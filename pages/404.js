@@ -1,10 +1,10 @@
-import { useRouter } from 'next/router';
 import { AiOutlineTwitter } from 'react-icons/ai';
+import { useRouterContext } from '../context/RouterContext';
 
 function Custom404() {
-  const rounter = useRouter();
+  const { router } = useRouterContext();
   const handleRedirection = () => {
-    rounter.push('/');
+    router.push('/', '/', { shallow: true });
   };
   return (
     <div className="h-full w-full flex flex-col gap-4 justify-center items-center text-white">

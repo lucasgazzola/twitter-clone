@@ -1,17 +1,19 @@
+import { useUserContext } from '../context/UserContext';
 import { supabase } from '../utils/supabaseClient';
-import { useRouter } from 'next/router';
 
 function UserAccountMenu() {
-  const router = useRouter();
+  const { setIsLoggedIn } = useUserContext();
 
-  const handleSignOut = async (e) => {
-    e.preventDefault();
+  const handleSignOut = async () => {
     try {
       const { error } = await supabase.auth.signOut();
-      if (error) throw new Error('Error signing out');
-      router.isReady && router.push('/login', '/login', { shallow: true });
+      if (error) {
+        throw new Error(error.message);
+      }
     } catch (error) {
       console.error(error);
+    } finally {
+      setIsLoggedIn(false);
     }
   };
 

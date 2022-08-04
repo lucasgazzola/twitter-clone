@@ -10,7 +10,7 @@ function NewTweetForm() {
   const { setTweets } = useTweetsContext();
 
   useEffect(() => {
-    const { id } = user;
+    const { id } = user || '';
     setId(id);
   }, [user]);
 

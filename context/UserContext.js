@@ -1,6 +1,5 @@
-import { useRouter } from 'next/router';
 import { createContext, useContext, useEffect, useState } from 'react';
-import { createProfile } from '../services/profileService';
+import { createProfileIfNotExists } from '../services/profileService';
 import { supabase } from '../utils/supabaseClient';
 
 const UserContext = createContext({});
@@ -10,70 +9,60 @@ export function useUserContext() {
 }
 
 export function UserContextProvider({ children }) {
-  const router = useRouter();
-
-  const INITIAL_USER = {
-    id: '',
-    username: '',
-    email: '',
-    fullName: '',
-    aud: '',
-    avatarUrl: ''
-  };
-
-  const [user, setUser] = useState(INITIAL_USER);
   const [session, setSession] = useState(supabase.auth.session());
+  const [user, setUser] = useState(null);
+  const [isLoggedIn, setIsLoggedIn] = useState(
+    Boolean(supabase.auth.session())
+  );
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
+    setUser(supabase.auth.user());
+    setIsLoggedIn(Boolean(supabase.auth.session()));
     setSession(supabase.auth.session());
-
     supabase.auth.onAuthStateChange((_event, session) => {
-      setSession(session);
+      setSession(supabase.auth.session());
+      setIsLoggedIn(Boolean(session));
+      setIsLoading(false);
     });
-
-    if (session && session.user) {
-      const { user } = session;
-      if (user?.aud === 'authenticated') {
-        const { user_metadata, email, aud, id } = user;
-        const { avatar_url, user_name, full_name } = user_metadata;
-
-        // profile creation in the supabase db if it does not exist yet
-        createProfile(user);
-
-        // reformat the response
-        const loggedUser = {
-          id,
-          username: user_name,
-          email,
-          fullName: full_name,
-          aud,
-          avatarUrl: avatar_url
-        };
-
-        // set the user
-        setUser(loggedUser);
-        // router.isReady &&
-        //   router
-        //     .push('/', '/', { shallow: true })
-        //     .then(() => {
-        //       setUser(loggedUser);
-        //     })
-        //     .catch((err) => {
-        //       console.log(err);
-        //     });
-      }
-    }
-    !session &&
-      router.isReady &&
-      router
-        .push('/login', '/login', { shallow: true })
-        .then(() => setUser(INITIAL_USER))
-        .catch((err) => {
-          console.log(err);
-        });
   }, []);
 
-  const userContextValue = { user };
+  useEffect(() => {
+    if (session) {
+      const { user } = session;
+
+      // user is null or
+      //   {
+      //     "id": "*****************************",
+      //     "aud": "authenticated",
+      //     "email": "lucasgazzola1@outlook.com",
+      //     "user_metadata": {
+      //         "avatar_url": "https://avatars.githubusercontent.com/u/85223876?v=4",
+      //         "user_name": "lucasgazzola"
+      //     },
+      // }
+
+      // create profile if doesn't exist
+      createProfileIfNotExists(user);
+
+      const { user_metadata, email, id } = user;
+      const { avatar_url, user_name } = user_metadata;
+      setUser({
+        id,
+        username: user_name,
+        email,
+        avatarUrl: avatar_url
+      });
+    }
+  }, [session]);
+
+  const userContextValue = {
+    isLoggedIn,
+    isLoading,
+    setIsLoggedIn,
+    setIsLoading,
+    user
+  };
 
   return (
     <UserContext.Provider value={userContextValue}>
